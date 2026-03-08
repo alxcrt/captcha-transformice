@@ -1,0 +1,403 @@
+/* ═══════════════════════════════════════════════════════════
+   Transformice Captcha — Full page layout like transformice.com
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Animations ── */
+@keyframes tfm-spinner-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes tfm-spinner-dash {
+  0% {
+    stroke-dasharray: 1, 150;
+    stroke-dashoffset: 0;
+  }
+
+  50% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -35;
+  }
+
+  100% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -124;
+  }
+}
+
+@keyframes tfm-checkmark-draw {
+  0% {
+    stroke-dashoffset: 36;
+  }
+
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes tfm-fade-in {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes tfm-cheese-pulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* ── Page — exact transformice.com background ── */
+.tfm-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #1e1915;
+  background-image: url("/img/fond.jpg"), url("/img/boucle.jpg");
+  background-position: top center, top left;
+  background-repeat: no-repeat, repeat-x;
+  font-family: "Verdana", sans-serif;
+  padding: 0 20px 40px;
+}
+
+/* ── Logo ── */
+.tfm-logo-wrap {
+  width: 40vw;
+  max-width: 427px;
+  margin: 0 auto;
+  padding-top: 10px;
+}
+
+.tfm-logo {
+  width: 100%;
+  display: block;
+}
+
+/* ═══════════════════════════════════════
+   Game container (replaces carousel)
+   ═══════════════════════════════════════ */
+.tfm-game-container {
+  width: 80%;
+  max-width: 800px;
+  aspect-ratio: 800 / 370;
+  margin: 0 auto;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  background: #0a0806;
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* Placeholder when game not started */
+.tfm-game-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: linear-gradient(180deg, #1a1510 0%, #0f0c09 100%);
+}
+
+.tfm-game-placeholder-cheese {
+  font-size: 64px;
+  animation: tfm-cheese-pulse 2s ease-in-out infinite;
+}
+
+.tfm-game-placeholder-text {
+  color: #6a5d50;
+  font-size: 16px;
+  margin: 0;
+}
+
+/* Game viewport (when playing) — scale up to crop UI bars */
+.tfm-game-viewport {
+  width: 100%;
+  height: 168%;
+  margin-top: -5%;
+  position: relative;
+}
+
+.tfm-game-viewport object {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Score pill overlay */
+.tfm-score-pill {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+  color: #c4b9a8;
+  font-size: 13px;
+  font-weight: bold;
+  padding: 5px 12px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.3s ease;
+  font-family: "Verdana", sans-serif;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.tfm-score-pill.idle {
+  background: rgba(40, 34, 28, 0.92);
+  backdrop-filter: blur(4px);
+  transform: scale(1);
+}
+
+.tfm-score-pill.flash {
+  background: rgba(91, 141, 86, 0.9);
+  color: #fff;
+  transform: scale(1.08);
+}
+
+.tfm-score-pill-emoji {
+  font-size: 14px;
+}
+
+.tfm-score-pill-text {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ═══════════════════════════════════════
+   Captcha widget — Transformice themed
+   ═══════════════════════════════════════ */
+.tfm-captcha-bar {
+  width: 340px;
+  margin: 10px auto 0;
+  background: rgba(40, 34, 28, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+  font-family: "Verdana", sans-serif;
+  height: 74px;
+}
+
+.tfm-captcha-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 16px;
+  flex: 1;
+  min-width: 0;
+}
+
+.tfm-captcha-right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  gap: 2px;
+  padding: 0 12px;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  align-self: stretch;
+  min-width: 70px;
+}
+
+/* ── Checkbox ── */
+.tfm-checkbox-holder {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.tfm-checkbox-holder.disabled {
+  cursor: default;
+}
+
+.tfm-checkbox {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.tfm-checkbox-inner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid #5a5046;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  transition: border-color 0.2s ease;
+  cursor: pointer;
+}
+
+.tfm-checkbox-inner:hover {
+  border-color: #c8a96e;
+}
+.tfm-checkbox-inner.disabled {
+  border-color: #3a3530;
+  background: rgba(255, 255, 255, 0.03);
+  cursor: default;
+}
+.tfm-checkbox-inner.disabled:hover {
+  border-color: #3a3530;
+}
+
+.tfm-anchor-label {
+  font-size: 13px;
+  font-weight: 400;
+  color: #c4b9a8;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* Task label next to checkbox */
+.tfm-task-label {
+  font-size: 11px;
+  color: #c8a96e;
+  font-weight: bold;
+  white-space: nowrap;
+  padding-left: 4px;
+}
+
+/* ── Branding ── */
+.tfm-brand-text {
+  font-size: 9px;
+  color: #8a7d6e;
+  letter-spacing: 0.03em;
+  line-height: 1;
+}
+
+.tfm-brand-links {
+  font-size: 7px;
+  color: #6a5d50;
+  line-height: 1;
+}
+
+.tfm-brand-links a {
+  color: #8a7d6e;
+  text-decoration: none;
+}
+
+.tfm-brand-links a:hover {
+  text-decoration: underline;
+  color: #c8a96e;
+}
+
+/* ── Spinner ── */
+.tfm-spinner {
+  width: 28px;
+  height: 28px;
+  animation: tfm-spinner-spin 2s linear infinite;
+}
+
+.tfm-spinner-lg {
+  width: 48px;
+  height: 48px;
+  animation: tfm-spinner-spin 2s linear infinite;
+}
+
+.tfm-spinner-circle {
+  fill: none;
+  stroke: #c8a96e;
+  stroke-width: 3;
+  stroke-linecap: round;
+  animation: tfm-spinner-dash 1.5s ease-in-out infinite;
+}
+
+/* ── Checkmark ── */
+.tfm-checkmark {
+  width: 28px;
+  height: 28px;
+}
+
+.tfm-checkmark-path {
+  fill: none;
+  stroke: #5b8d56;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 36;
+  stroke-dashoffset: 36;
+  animation: tfm-checkmark-draw 0.4s ease-out forwards;
+}
+
+/* ═══════════════════════════════════════
+   Footer — matches transformice.com
+   ═══════════════════════════════════════ */
+.tfm-footer-links {
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.tfm-footer-links a {
+  font-size: 80%;
+  color: #5b8d56;
+  text-decoration: underline dotted;
+  margin-left: 4px;
+}
+
+.tfm-social {
+  text-align: center;
+  margin-top: 8px;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.tfm-social a {
+  display: inline-block;
+}
+
+.tfm-social img {
+  width: 48px;
+  height: 48px;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.tfm-social img:hover {
+  opacity: 1;
+}
+
+/* ── Made by ── */
+.tfm-made-by {
+  color: #5a5046;
+  font-size: 11px;
+  margin: 16px 0 0;
+  text-align: center;
+}
+
+.tfm-made-by a {
+  color: #8a7d6e;
+  text-decoration: none;
+}
+
+.tfm-made-by a:hover {
+  color: #c8a96e;
+  text-decoration: underline;
+}
