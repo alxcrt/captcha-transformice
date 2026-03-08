@@ -6,7 +6,7 @@ type CaptchaState = 'idle' | 'verifying' | 'challenge' | 'success'
 export default function App() {
   const [state, setState] = useState<CaptchaState>('idle')
   const [score, setScore] = useState(0)
-  const [flash, setFlash] = useState(false)
+  const [_flash, setFlash] = useState(false)
   const [prevScore, setPrevScore] = useState(0)
   const required = 3
   const ruffleLoaded = useRef(false)
