@@ -14,13 +14,14 @@ export default function App() {
   const retryRef = useRef(0)
 
   const [sessionId] = useState(() => crypto.randomUUID().slice(0, 8))
+  const host = window.location.hostname
 
   // ── WebSocket: listen for victory events ──
   useEffect(() => {
     let unmounted = false
     const connect = () => {
       if (unmounted) return
-      const ws = new WebSocket(`ws://localhost:8082?session=${sessionId}`)
+      const ws = new WebSocket(`ws://${host}:8082?session=${sessionId}`)
       ws.onopen = () => { retryRef.current = 0 }
       ws.onmessage = (event) => {
         try {
@@ -55,10 +56,10 @@ export default function App() {
         splashScreen: false, logLevel: 'warn',
         unmuteOverlay: 'hidden', allowNetworking: 'all',
         socketProxy: [
-          { host: '127.0.0.1', port: 11801, proxyUrl: `ws://localhost:11801?session=${sessionId}` },
-          { host: '127.0.0.1', port: 12801, proxyUrl: `ws://localhost:12801?session=${sessionId}` },
-          { host: '127.0.0.1', port: 13801, proxyUrl: `ws://localhost:13801?session=${sessionId}` },
-          { host: '127.0.0.1', port: 14801, proxyUrl: `ws://localhost:14801?session=${sessionId}` },
+          { host: '127.0.0.1', port: 11801, proxyUrl: `ws://${host}:11801?session=${sessionId}` },
+          { host: '127.0.0.1', port: 12801, proxyUrl: `ws://${host}:12801?session=${sessionId}` },
+          { host: '127.0.0.1', port: 13801, proxyUrl: `ws://${host}:13801?session=${sessionId}` },
+          { host: '127.0.0.1', port: 14801, proxyUrl: `ws://${host}:14801?session=${sessionId}` },
         ],
       }
     }
