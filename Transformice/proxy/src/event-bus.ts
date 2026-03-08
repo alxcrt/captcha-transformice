@@ -12,19 +12,28 @@ export class EventBus {
   private sessions = new Map<string, Set<WebSocket>>();
   private wss: WebSocketServer | null = null;
 
-  /** Start WebSocket server on given port (default 8082), bind to 127.0.0.1 */
-  start(port: number = 8082): void {
+  /** Get the WebSocketServer instance */
+  getWss(): WebSocketServer | null {
+    return this.wss;
+  }
+
+  /** Start WebSocket server. If noServer=true, uses noServer mode for path-based upgrade. */
+  start(port: number = 8082, noServer: boolean = false): void {
     if (this.wss) {
       console.log("[EventBus] Server already running");
       return;
     }
 
-    const bindHost = process.env.BIND_HOST || "127.0.0.1";
-    this.wss = new WebSocketServer({ port, host: bindHost });
-
-    this.wss.on("listening", () => {
-      console.log(`[EventBus] Listening on 127.0.0.1:${port}`);
-    });
+    if (noServer) {
+      this.wss = new WebSocketServer({ noServer: true });
+      console.log(`[EventBus] Ready (noServer mode) for path /ws/${port}`);
+    } else {
+      const bindHost = process.env.BIND_HOST || "127.0.0.1";
+      this.wss = new WebSocketServer({ port, host: bindHost });
+      this.wss.on("listening", () => {
+        console.log(`[EventBus] Listening on ${bindHost}:${port}`);
+      });
+    }
 
     this.wss.on("connection", (ws: WebSocket, req) => {
       // Extract sessionId from query string: ws://localhost:8082?session=<id>

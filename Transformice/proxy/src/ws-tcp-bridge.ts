@@ -11,6 +11,8 @@ export interface BridgeConfig {
   wsPort: number; // WebSocket listen port (e.g., 11801)
   tcpHost: string; // TCP target host (e.g., "localhost")
   tcpPort: number; // TCP target port (e.g., 11802)
+  /** Optional: attach to an existing HTTP server via path-based upgrade instead of binding a new port */
+  noServer?: boolean;
 }
 
 export class WsTcpBridge {
@@ -23,13 +25,23 @@ export class WsTcpBridge {
     console.log(`[Bridge:${this.config.wsPort}] ${msg}`);
   }
 
-  // Start the WebSocket server, bind to 127.0.0.1
-  start(): void {
-    const { wsPort, tcpHost, tcpPort } = this.config;
+  /** Get the WebSocketServer instance (available after start) */
+  getWss(): WebSocketServer | null {
+    return this.wss;
+  }
 
-    const bindHost = process.env.BIND_HOST || "127.0.0.1";
-    this.wss = new WebSocketServer({ host: bindHost, port: wsPort });
-    this.log(`Listening on ws://127.0.0.1:${wsPort} -> ${tcpHost}:${tcpPort}`);
+  // Start the WebSocket server
+  start(): void {
+    const { wsPort, tcpHost, tcpPort, noServer } = this.config;
+
+    if (noServer) {
+      this.wss = new WebSocketServer({ noServer: true });
+      this.log(`Ready (noServer mode) for path /ws/${wsPort} -> ${tcpHost}:${tcpPort}`);
+    } else {
+      const bindHost = process.env.BIND_HOST || "127.0.0.1";
+      this.wss = new WebSocketServer({ host: bindHost, port: wsPort });
+      this.log(`Listening on ws://${bindHost}:${wsPort} -> ${tcpHost}:${tcpPort}`);
+    }
 
     this.wss.on("error", (err) => {
       this.log(`Server error: ${err.message}`);

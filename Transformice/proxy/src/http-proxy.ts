@@ -15,6 +15,7 @@ export interface HttpProxyConfig {
   offlineMode: boolean;
 }
 
+
 const DEFAULT_CONFIG: HttpProxyConfig = {
   port: 8081,
   cacheDir: "transformice_cache",
@@ -22,9 +23,14 @@ const DEFAULT_CONFIG: HttpProxyConfig = {
 };
 
 export class HttpProxy {
-  private server: http.Server | null = null;
+  private _server: http.Server | null = null;
   private cacheIndex: Record<string, CacheEntry> = {};
   private config: HttpProxyConfig;
+
+  /** Expose the HTTP server so WebSocket upgrades can be attached */
+  get server(): http.Server | null {
+    return this._server;
+  }
 
   constructor(config: Partial<HttpProxyConfig> = {}) {
     this.config = { ...DEFAULT_CONFIG, ...config };
@@ -34,7 +40,7 @@ export class HttpProxy {
     this.initCacheDirectories();
     this.loadCacheIndex();
 
-    this.server = http.createServer((req, res) => {
+    this._server = http.createServer((req, res) => {
       this.addCorsHeaders(res);
 
       if (req.method === "OPTIONS") {
@@ -59,7 +65,7 @@ export class HttpProxy {
       this.handleProxyRequest(url, res);
     });
 
-    this.server.listen(this.config.port, () => {
+    this._server.listen(this.config.port, () => {
       console.log(
         `[HttpProxy] HTTP proxy listening on port ${this.config.port} (mode: ${this.config.offlineMode ? "offline" : "online"})`
       );
@@ -67,11 +73,11 @@ export class HttpProxy {
   }
 
   stop(): void {
-    if (this.server) {
-      this.server.close(() => {
+    if (this._server) {
+      this._server.close(() => {
         console.log("[HttpProxy] Server stopped");
       });
-      this.server = null;
+      this._server = null;
     }
   }
 

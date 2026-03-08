@@ -16,13 +16,17 @@ export default function App() {
   const [sessionId] = useState(() => crypto.randomUUID().slice(0, 8))
   const host = window.location.hostname
   const wsProto = window.location.protocol === 'https:' ? 'wss' : 'ws'
+  const wsBase = (port: number) =>
+    host === 'localhost'
+      ? `${wsProto}://${host}:${port}`
+      : `${wsProto}://proxy-tfm-captcha.alexcretu.com/ws/${port}`
 
   // ── WebSocket: listen for victory events ──
   useEffect(() => {
     let unmounted = false
     const connect = () => {
       if (unmounted) return
-      const ws = new WebSocket(`${wsProto}://${host}:8082?session=${sessionId}`)
+      const ws = new WebSocket(`${wsBase(8082)}?session=${sessionId}`)
       ws.onopen = () => { retryRef.current = 0 }
       ws.onmessage = (event) => {
         try {
@@ -57,10 +61,10 @@ export default function App() {
         splashScreen: false, logLevel: 'warn',
         unmuteOverlay: 'hidden', allowNetworking: 'all',
         socketProxy: [
-          { host: '127.0.0.1', port: 11801, proxyUrl: `${wsProto}://${host}:11801?session=${sessionId}` },
-          { host: '127.0.0.1', port: 12801, proxyUrl: `${wsProto}://${host}:12801?session=${sessionId}` },
-          { host: '127.0.0.1', port: 13801, proxyUrl: `${wsProto}://${host}:13801?session=${sessionId}` },
-          { host: '127.0.0.1', port: 14801, proxyUrl: `${wsProto}://${host}:14801?session=${sessionId}` },
+          { host: '127.0.0.1', port: 11801, proxyUrl: `${wsBase(11801)}?session=${sessionId}` },
+          { host: '127.0.0.1', port: 12801, proxyUrl: `${wsBase(12801)}?session=${sessionId}` },
+          { host: '127.0.0.1', port: 13801, proxyUrl: `${wsBase(13801)}?session=${sessionId}` },
+          { host: '127.0.0.1', port: 14801, proxyUrl: `${wsBase(14801)}?session=${sessionId}` },
         ],
       }
     }
