@@ -1,0 +1,7 @@
+# Robots.txt for Transformice Captcha
+
+User-agent: *
+Allow: /
+Disallow: /api/
+
+Sitemap: https://captcha.transformice.com/sitemap.xml

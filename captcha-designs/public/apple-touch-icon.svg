@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
+  <!-- Background -->
+  <rect width="180" height="180" rx="36" fill="#28221c"/>
+  <!-- Shield shape -->
+  <path d="M90 20 L150 40 L150 95 C150 130 125 155 90 165 C55 155 30 130 30 95 L30 40 Z" fill="#3a3228" stroke="#c8a96e" stroke-width="4"/>
+  <!-- Mouse face - round head -->
+  <circle cx="90" cy="90" r="38" fill="#c8a96e"/>
+  <!-- Left ear -->
+  <circle cx="59" cy="57" r="19" fill="#c8a96e"/>
+  <circle cx="59" cy="57" r="11" fill="#28221c"/>
+  <!-- Right ear -->
+  <circle cx="121" cy="57" r="19" fill="#c8a96e"/>
+  <circle cx="121" cy="57" r="11" fill="#28221c"/>
+  <!-- Eyes -->
+  <circle cx="76" cy="84" r="6" fill="#28221c"/>
+  <circle cx="104" cy="84" r="6" fill="#28221c"/>
+  <!-- Eye highlights -->
+  <circle cx="78" cy="82" r="2" fill="white" opacity="0.6"/>
+  <circle cx="106" cy="82" r="2" fill="white" opacity="0.6"/>
+  <!-- Nose -->
+  <ellipse cx="90" cy="98" rx="8" ry="5.5" fill="#28221c"/>
+  <!-- Nose highlight -->
+  <ellipse cx="88" cy="96.5" rx="2.5" ry="1.5" fill="white" opacity="0.2"/>
+  <!-- Whiskers left -->
+  <line x1="55" y1="92" x2="75" y2="95" stroke="#28221c" stroke-width="1.5" opacity="0.5"/>
+  <line x1="55" y1="100" x2="75" y2="100" stroke="#28221c" stroke-width="1.5" opacity="0.5"/>
+  <!-- Whiskers right -->
+  <line x1="125" y1="92" x2="105" y2="95" stroke="#28221c" stroke-width="1.5" opacity="0.5"/>
+  <line x1="125" y1="100" x2="105" y2="100" stroke="#28221c" stroke-width="1.5" opacity="0.5"/>
+  <!-- Checkmark badge -->
+  <circle cx="135" cy="135" r="28" fill="#5b8d56"/>
+  <circle cx="135" cy="135" r="24" fill="#5b8d56" stroke="white" stroke-width="2" opacity="0.3"/>
+  <path d="M121 135 L131 146 L151 124" fill="none" stroke="white" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
