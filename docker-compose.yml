@@ -30,6 +30,7 @@ services:
     restart: unless-stopped
     depends_on:
       - java-server
+    command: ["node", "dist/index.js", "--offline"]
     environment:
       TCP_HOST: java-server
       BIND_HOST: "0.0.0.0"
