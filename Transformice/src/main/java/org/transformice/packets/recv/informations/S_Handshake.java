@@ -1,0 +1,92 @@
+package org.transformice.packets.recv.informations;
+
+// Imports
+import org.bytearray.ByteArray;
+import org.transformice.Application;
+import org.transformice.Client;
+import org.transformice.database.collections.Account;
+import org.transformice.libraries.SrcRandom;
+import org.transformice.packets.RecvPacket;
+
+// Packets
+import org.transformice.packets.send.language.C_ClientVerification;
+import org.transformice.packets.send.login.C_Handshake;
+import org.transformice.packets.send.informations.C_SetAllowEmailAddress;
+import org.transformice.packets.send.newpackets.C_SetNewsPopupFlyer;
+import org.transformice.packets.send.tribe.C_ChangeLoginAdventure;
+import org.transformice.packets.send.transformice.C_ChangeLoginBackground;
+import org.transformice.packets.send.shop.C_AddAnimationLib;
+import org.transformice.packets.send.lua.C_AddTextArea;
+
+@SuppressWarnings("unused")
+public final class S_Handshake implements RecvPacket {
+    @Override
+    public void handle(Client client, int fingerPrint, ByteArray data) {
+        short version = data.readShort();
+        String language = data.readString();
+        String connectionToken = data.readString();
+        String playerType = data.readString();
+
+        data.readString(); // browser info
+        data.readInt(); // loader stage size.
+        data.readString(); // ccfData
+        data.readString(); // font name hash
+        data.readString(); // server string
+        data.readInt(); // referrer
+        data.readInt(); // time since you opened the game.
+        data.readString(); // game name, empty in Transformice
+
+        Application.getLogger().debug(Application.getTranslationManager().get("newconnection", client.getIpAddress(), playerType));
+        if(version != Application.getSwfInfo().version || !connectionToken.equals(Application.getSwfInfo().connection_key)) {
+            Application.getLogger().warn(Application.getTranslationManager().get("fakeswfconnection", client.getIpAddress()));
+            Application.getLogger().warn(String.format("Ckey --> %s", connectionToken));
+            Application.getLogger().warn(String.format("Version --> %d", version));
+            client.closeConnection();
+            return;
+        }
+
+        client.playerType = playerType;
+        client.sendPacket(new C_Handshake(client.getServer().getPlayersCount(), language, client.getCountryLangue()));
+        client.sendPacket(new C_AddAnimationLib());
+        client.sendPacket(new C_SetNewsPopupFlyer());
+        client.sendPacket(new C_SetAllowEmailAddress());
+        client.sendPacket(new C_ChangeLoginBackground());
+        client.sendPacket(new C_ChangeLoginAdventure());
+        client.verCode = SrcRandom.RandomNumber(1000000, 999999999);
+        client.sendPacket(new C_ClientVerification(client.verCode));
+
+        // Auto-login as guest for captcha mode
+        if(Application.getPropertiesInfo().auto_guest_login) {
+            client.playerCommunity = language.toUpperCase();
+            String nickname = "You";
+            if(client.getServer().checkIsConnected(nickname)) {
+                nickname = "You_" + SrcRandom.generateNumber(3);
+                while(client.getServer().checkIsConnected(nickname)) {
+                    nickname = "You_" + SrcRandom.generateNumber(3);
+                }
+            }
+            // Each captcha player gets their own private room so they don't overlap
+            String privateRoom = "vanilla_" + SrcRandom.generateNumber(8);
+            client.sendLogin(new Account(nickname, "", "", "", true), nickname, privateRoom, false, true);
+
+            // Hide the top HUD bar with an opaque text area overlay
+            // id=9999, pos=(0,0), size=(800,30), black bg, black border, full opacity, fixed position
+            client.sendPacket(new C_AddTextArea(9999, "", 0, 0, 800, 30, 0x000000, 0x000000, 100, true));
+        }
+    }
+
+    @Override
+    public int getC() {
+        return 28;
+    }
+
+    @Override
+    public int getCC() {
+        return 1;
+    }
+
+    @Override
+    public boolean isLegacyPacket() {
+        return false;
+    }
+}
