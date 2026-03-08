@@ -111,8 +111,8 @@ export default function App() {
           )}
           {state === 'challenge' && (
               <div className="tfm-game-viewport">
-                <object data="/assets/transformice-v3.swf" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}>
-                  <param name="movie" value="/assets/transformice-v3.swf" />
+                <object data="/assets/transformice-v4.swf" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}>
+                  <param name="movie" value="/assets/transformice-v4.swf" />
                   <param name="play" value="true" />
                   <param name="menu" value="false" />
                   <param name="quality" value="high" />
