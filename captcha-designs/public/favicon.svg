@@ -1,9 +1,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <!-- Cheese wedge -->
-  <path d="M4 24 L16 4 L28 24 Z" fill="#f0c040" stroke="#d4a020" stroke-width="1"/>
-  <path d="M4 24 L28 24 L28 28 L4 28 Z" fill="#d4a020"/>
-  <!-- Holes -->
-  <ellipse cx="14" cy="18" rx="3" ry="2.5" fill="#c89020"/>
-  <ellipse cx="21" cy="15" rx="2" ry="1.8" fill="#c89020"/>
-  <circle cx="11" cy="12" r="1.5" fill="#c89020"/>
+  <!-- Back edge / rind -->
+  <path d="M3 22 L16 6 L29 22 Z" fill="#c47d20"/>
+  <!-- Top face - lit surface -->
+  <path d="M4 21 L16 7 L28 21 Z" fill="#fdd44b"/>
+  <!-- Front face - shadow side gives depth -->
+  <path d="M4 21 L28 21 L26 26 L6 26 Z" fill="#e8a828"/>
+  <!-- Right side face - darker for 3D -->
+  <path d="M28 21 L26 26 L29 23 Z" fill="#cf8f1e"/>
+  <!-- Hole 1 - big, top center -->
+  <ellipse cx="16" cy="16.5" rx="3.2" ry="2.2" fill="#d49520"/>
+  <ellipse cx="15.6" cy="16.2" rx="2.6" ry="1.7" fill="#c48818"/>
+  <!-- Hole 2 - smaller, upper left -->
+  <ellipse cx="10.5" cy="15" rx="1.8" ry="1.3" fill="#d49520"/>
+  <ellipse cx="10.3" cy="14.8" rx="1.3" ry="0.9" fill="#c48818"/>
+  <!-- Hole 3 - small, right -->
+  <circle cx="22" cy="17.5" r="1.4" fill="#d49520"/>
+  <circle cx="21.8" cy="17.3" r="1" fill="#c48818"/>
+  <!-- Top highlight edge -->
+  <path d="M5 20.5 L16 8 L27 20.5" fill="none" stroke="#ffe46b" stroke-width="0.6" opacity="0.7"/>
 </svg>
