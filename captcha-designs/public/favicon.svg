@@ -1,8 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <circle cx="9" cy="8" r="6" fill="#c8a96e"/>
-  <circle cx="23" cy="8" r="6" fill="#c8a96e"/>
-  <circle cx="16" cy="18" r="10" fill="#c8a96e"/>
-  <circle cx="12.5" cy="16" r="1.5" fill="#28221c"/>
-  <circle cx="19.5" cy="16" r="1.5" fill="#28221c"/>
-  <ellipse cx="16" cy="20" rx="2" ry="1.3" fill="#28221c"/>
+  <!-- Cheese wedge -->
+  <path d="M4 24 L16 4 L28 24 Z" fill="#f0c040" stroke="#d4a020" stroke-width="1"/>
+  <path d="M4 24 L28 24 L28 28 L4 28 Z" fill="#d4a020"/>
+  <!-- Holes -->
+  <ellipse cx="14" cy="18" rx="3" ry="2.5" fill="#c89020"/>
+  <ellipse cx="21" cy="15" rx="2" ry="1.8" fill="#c89020"/>
+  <circle cx="11" cy="12" r="1.5" fill="#c89020"/>
 </svg>
