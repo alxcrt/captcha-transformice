@@ -22,8 +22,6 @@ services:
       - "12802:12802"
       - "13802:13802"
       - "14802:14802"
-    volumes:
-      - ./Transformice/config/properties.docker.json:/app/config/properties.json
 
   proxy:
     build:

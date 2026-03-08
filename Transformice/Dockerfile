@@ -10,6 +10,7 @@ WORKDIR /app
 COPY --from=build /app/target/classes ./classes
 COPY --from=build /app/target/deps ./deps
 COPY config ./config
+COPY config/properties.docker.json ./config/properties.json
 
 EXPOSE 11802 12802 13802 14802
 
