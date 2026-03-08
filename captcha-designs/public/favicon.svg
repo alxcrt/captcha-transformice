@@ -1,20 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <!-- Shield shape -->
-  <path d="M16 1 L29 6 L29 16 C29 23 23 29 16 31 C9 29 3 23 3 16 L3 6 Z" fill="#28221c" stroke="#c8a96e" stroke-width="1.5"/>
-  <!-- Mouse face - round head -->
-  <circle cx="16" cy="15" r="7" fill="#c8a96e"/>
-  <!-- Left ear -->
-  <circle cx="10.5" cy="9.5" r="3.5" fill="#c8a96e"/>
-  <circle cx="10.5" cy="9.5" r="2" fill="#28221c"/>
-  <!-- Right ear -->
-  <circle cx="21.5" cy="9.5" r="3.5" fill="#c8a96e"/>
-  <circle cx="21.5" cy="9.5" r="2" fill="#28221c"/>
-  <!-- Eyes -->
-  <circle cx="13.5" cy="14" r="1.2" fill="#28221c"/>
-  <circle cx="18.5" cy="14" r="1.2" fill="#28221c"/>
-  <!-- Nose -->
-  <ellipse cx="16" cy="16.5" rx="1.5" ry="1" fill="#28221c"/>
-  <!-- Checkmark in bottom-right -->
-  <circle cx="24" cy="24" r="5.5" fill="#5b8d56"/>
-  <path d="M21 24 L23 26.5 L27.5 21.5" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="9" cy="8" r="6" fill="#c8a96e"/>
+  <circle cx="23" cy="8" r="6" fill="#c8a96e"/>
+  <circle cx="16" cy="18" r="10" fill="#c8a96e"/>
+  <circle cx="12.5" cy="16" r="1.5" fill="#28221c"/>
+  <circle cx="19.5" cy="16" r="1.5" fill="#28221c"/>
+  <ellipse cx="16" cy="20" rx="2" ry="1.3" fill="#28221c"/>
 </svg>
