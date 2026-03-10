@@ -114,7 +114,19 @@ export default function App() {
             </div>
           )}
           {state === 'challenge' && (
-              <div className="tfm-game-viewport">
+              <div className="tfm-game-viewport" ref={(el) => {
+                if (el) {
+                  // Auto-focus the Ruffle player so keyboard input works immediately
+                  const timer = setInterval(() => {
+                    const player = el.querySelector('ruffle-player, object, embed, canvas') as HTMLElement | null
+                    if (player) {
+                      player.focus()
+                      clearInterval(timer)
+                    }
+                  }, 100)
+                  setTimeout(() => clearInterval(timer), 10000)
+                }
+              }}>
                 <object data="/assets/transformice-v4.swf" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}>
                   <param name="movie" value="/assets/transformice-v4.swf" />
                   <param name="play" value="true" />
