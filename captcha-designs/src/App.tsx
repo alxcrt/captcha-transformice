@@ -116,14 +116,19 @@ export default function App() {
           {state === 'challenge' && (
               <div className="tfm-game-viewport" ref={(el) => {
                 if (el) {
-                  // Auto-focus the Ruffle player so keyboard input works immediately
+                  // Auto-activate the Ruffle player so keyboard input works immediately
                   const timer = setInterval(() => {
-                    const player = el.querySelector('ruffle-object, ruffle-player, object, embed') as HTMLElement | null
-                    if (player) {
+                    const player = el.querySelector('ruffle-object, ruffle-player') as HTMLElement | null
+                    const canvas = player?.shadowRoot?.querySelector('canvas') as HTMLElement | null
+                    if (player && canvas) {
+                      // Ruffle needs a click on its internal canvas to activate keyboard input
+                      canvas.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true }))
+                      canvas.dispatchEvent(new MouseEvent('pointerup', { bubbles: true }))
+                      canvas.dispatchEvent(new MouseEvent('click', { bubbles: true }))
                       player.focus()
                       clearInterval(timer)
                     }
-                  }, 100)
+                  }, 200)
                   setTimeout(() => clearInterval(timer), 10000)
                 }
               }}>
