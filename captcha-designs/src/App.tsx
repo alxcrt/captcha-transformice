@@ -118,7 +118,7 @@ export default function App() {
                 if (el) {
                   // Auto-focus the Ruffle player so keyboard input works immediately
                   const timer = setInterval(() => {
-                    const player = el.querySelector('ruffle-player, object, embed, canvas') as HTMLElement | null
+                    const player = el.querySelector('ruffle-object, ruffle-player, object, embed') as HTMLElement | null
                     if (player) {
                       player.focus()
                       clearInterval(timer)
