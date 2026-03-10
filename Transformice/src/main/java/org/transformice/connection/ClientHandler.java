@@ -46,6 +46,10 @@ public final class ClientHandler extends SimpleChannelHandler {
             return;
         }
 
+        if (packet.getLength() < 3) {
+            return;
+        }
+
         Client client = (Client) context.getChannel().getAttachment();
         if (client == null) {
             this.server.addClientSession(context.getChannel());
