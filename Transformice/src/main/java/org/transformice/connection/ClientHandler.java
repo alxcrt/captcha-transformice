@@ -7,6 +7,7 @@ import org.jboss.netty.channel.ChannelStateEvent;
 import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelHandler;
+import org.jboss.netty.handler.codec.frame.CorruptedFrameException;
 import org.bytearray.ByteArray;
 import org.transformice.Application;
 import org.transformice.Client;
@@ -33,6 +34,9 @@ public final class ClientHandler extends SimpleChannelHandler {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) {
         Application.getLogger().error(Application.getTranslationManager().get("packeterror"), e.getCause());
+        if (e.getCause() instanceof CorruptedFrameException) {
+            ctx.getChannel().close();
+        }
     }
 
     @Override

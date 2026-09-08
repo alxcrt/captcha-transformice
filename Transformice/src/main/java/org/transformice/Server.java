@@ -24,6 +24,7 @@ import lombok.Getter;
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelPipeline;
+import org.jboss.netty.channel.Channels;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 import org.transformice.command.CommandLoader;
 import org.transformice.connection.*;
@@ -445,10 +446,7 @@ public final class Server {
 
         if (!Application.getSwfInfo().ports.isEmpty()) {
             ServerBootstrap bootstrap = new ServerBootstrap(new NioServerSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool()));
-            ChannelPipeline pipeline = bootstrap.getPipeline();
-            pipeline.addLast("encoder", new Encoder());
-            pipeline.addLast("decoder", new Decoder());
-            pipeline.addLast("handler", new ClientHandler(this));
+            bootstrap.setPipelineFactory(() -> createClientPipeline(this));
 
             for (Integer port : Application.getSwfInfo().ports) {
                 this.channels.add(bootstrap.bind(new InetSocketAddress(port)));
@@ -457,6 +455,14 @@ public final class Server {
         } else {
             Application.getLogger().error(Application.getTranslationManager().get("startfailure"));
         }
+    }
+
+    static ChannelPipeline createClientPipeline(Server server) {
+        ChannelPipeline pipeline = Channels.pipeline();
+        pipeline.addLast("encoder", new Encoder());
+        pipeline.addLast("decoder", new Decoder());
+        pipeline.addLast("handler", new ClientHandler(server));
+        return pipeline;
     }
 
     /**
