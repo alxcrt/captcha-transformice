@@ -1,9 +1,10 @@
 #!/bin/bash
-# Start all 3 services: Java server, WebSocket proxy, Next.js frontend
+# Start all 3 services: Java server, WebSocket proxy, Vite frontend
 
 ROOT="$(cd "$(dirname "$0")" && pwd)"
-JAVA_HOME="/Users/alex/Library/Java/JavaVirtualMachines/corretto-22.0.2/Contents/Home"
-MVN="/Applications/IntelliJ IDEA.app/Contents/plugins/maven/lib/maven3/bin/mvn"
+# Override JAVA_HOME / MVN if Java 22 or Maven are not the defaults on your PATH
+JAVA_HOME="${JAVA_HOME:-$(/usr/libexec/java_home -v 22 2>/dev/null)}"
+MVN="${MVN:-mvn}"
 
 cleanup() {
     echo ""
@@ -18,7 +19,7 @@ trap cleanup SIGINT SIGTERM
 # 1. Java server
 echo "Starting Java server..."
 cd "$ROOT/Transformice"
-JAVA_HOME="$JAVA_HOME" PATH="$JAVA_HOME/bin:$PATH" "$MVN" -q compile exec:java \
+JAVA_HOME="$JAVA_HOME" PATH="${JAVA_HOME:+$JAVA_HOME/bin:}$PATH" "$MVN" -q compile exec:java \
     -Dexec.mainClass="org.transformice.Application" \
     -f "$ROOT/Transformice/pom.xml" &
 PID_SERVER=$!
