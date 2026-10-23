@@ -3,6 +3,7 @@ WORKDIR /app
 COPY pom.xml .
 RUN mvn dependency:go-offline -q
 COPY src ./src
+COPY config ./config
 RUN mvn test-compile dependency:copy-dependencies -DoutputDirectory=target/deps -q \
     && java -cp "target/test-classes:target/classes:target/deps/*" org.transformice.DecoderTest
 
