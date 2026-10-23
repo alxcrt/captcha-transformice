@@ -3,23 +3,23 @@ package org.transformice.connection;
 // Imports
 import java.util.Arrays;
 import org.bytearray.ByteArray;
-import org.jboss.netty.buffer.ChannelBuffer;
-import org.jboss.netty.channel.Channel;
-import org.jboss.netty.channel.ChannelFutureListener;
-import org.jboss.netty.channel.ChannelHandlerContext;
-import org.jboss.netty.handler.codec.frame.FrameDecoder;
-import org.jboss.netty.handler.codec.frame.CorruptedFrameException;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.ByteToMessageDecoder;
+import io.netty.handler.codec.CorruptedFrameException;
 import org.transformice.Application;
 
-public class Decoder extends FrameDecoder {
+public class Decoder extends ByteToMessageDecoder {
     private static final byte[] POLICY_REQUEST = "<policy-file-request/>".getBytes();
     // ponytail: cap inbound frames at 1 MiB; raise if a supported upload needs more.
     private static final int MAX_PACKET_LENGTH = 1024 * 1024;
 
     @Override
-    protected Object decode(ChannelHandlerContext context, Channel channel, ChannelBuffer buffer) throws CorruptedFrameException {
+    protected void decode(ChannelHandlerContext context, ByteBuf buffer, java.util.List<Object> output) throws CorruptedFrameException {
         if (buffer.readableBytes() < 2) {
-            return null;
+            return;
         }
 
         // Every partial frame must rewind to its own start, never a previous frame.
@@ -29,8 +29,8 @@ public class Decoder extends FrameDecoder {
             buffer.readBytes(incoming);
             if (Arrays.equals(Arrays.copyOf(incoming, POLICY_REQUEST.length), POLICY_REQUEST) && incoming[POLICY_REQUEST.length] == 0) {
                 Application.getLogger().warn("Policy file request.");
-                channel.write("<cross-domain-policy><allow-access-from domain=\"*\" to-ports=\"*\" /></cross-domain-policy>").addListener(ChannelFutureListener.CLOSE);
-                return null;
+                context.writeAndFlush("<cross-domain-policy><allow-access-from domain=\"*\" to-ports=\"*\" /></cross-domain-policy>").addListener(ChannelFutureListener.CLOSE);
+                return;
             }
 
             buffer.resetReaderIndex();
@@ -39,9 +39,9 @@ public class Decoder extends FrameDecoder {
         long length = 0;
         int shift = 0;
         while (true) {
-            if (!buffer.readable()) {
+            if (!buffer.isReadable()) {
                 buffer.resetReaderIndex();
-                return null;
+                return;
             }
 
             byte b = buffer.readByte();
@@ -63,11 +63,11 @@ public class Decoder extends FrameDecoder {
         // The protocol length excludes the fingerprint byte.
         if (buffer.readableBytes() < length + 1) {
             buffer.resetReaderIndex();
-            return null;
+            return;
         }
 
         byte[] packetData = new byte[(int) length + 1];
         buffer.readBytes(packetData);
-        return new ByteArray(packetData);
+        output.add(new ByteArray(packetData));
     }
 }

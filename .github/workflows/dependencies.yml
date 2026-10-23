@@ -1,0 +1,52 @@
+{
+  "name": "Dependency checks",
+  "on": {
+    "push": {},
+    "pull_request": {},
+    "workflow_dispatch": {}
+  },
+  "permissions": {
+    "contents": "read"
+  },
+  "concurrency": {
+    "group": "dependency-${{ github.workflow }}-${{ github.ref }}",
+    "cancel-in-progress": true
+  },
+  "jobs": {
+    "dependency-gate": {
+      "name": "Dependency gate",
+      "runs-on": "ubuntu-latest",
+      "timeout-minutes": 30,
+      "env": {
+        "NEXT_TELEMETRY_DISABLED": "1"
+      },
+      "steps": [
+        {
+          "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"
+        },
+        {
+          "uses": "actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38",
+          "with": {
+            "node-version": "24"
+          }
+        },
+        {
+          "uses": "oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6",
+          "with": {
+            "bun-version": "1.4.3"
+          }
+        },
+        {
+          "run": "cd captcha-designs && npm ci && npm run build"
+        },
+        {
+          "run": "cd Transformice/proxy && npm ci && npm run build"
+        },
+        {
+          "name": "Compile the game server and proxy on the declared runtimes",
+          "run": "docker build --pull -t dependency-game ./Transformice\ndocker build --pull -t dependency-proxy ./Transformice/proxy\ndocker build --pull -t dependency-frontend ./captcha-designs"
+        }
+      ]
+    }
+  }
+}
