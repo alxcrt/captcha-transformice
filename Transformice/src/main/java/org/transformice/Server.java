@@ -31,7 +31,6 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.AttributeKey;
 import io.netty.channel.Channel;
 
-import io.netty.channel.Channels;
 
 import org.transformice.command.CommandLoader;
 import org.transformice.connection.*;
