@@ -23,7 +23,7 @@ public final class DBManager {
      * Starts the mongodb database.
      */
     public static void initializeDatabase() {
-        String dbUrl = Application.getPropertiesInfo().database_url;
+        String dbUrl = System.getenv().getOrDefault("MONGODB_URI", Application.getPropertiesInfo().database_url);
         String dbName = Application.getPropertiesInfo().collection_name;
 
         MapperOptions mapperOptions = MapperOptions.builder().storeEmpties(true).storeNulls(false).build();
