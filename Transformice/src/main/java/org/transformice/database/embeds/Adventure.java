@@ -4,10 +4,12 @@ package org.transformice.database.embeds;
 import dev.morphia.annotations.Embedded;
 import java.util.ArrayList;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Embedded
+@NoArgsConstructor(force = true)
 public class Adventure {
     private final int adventureId;
     private final int bannerId;

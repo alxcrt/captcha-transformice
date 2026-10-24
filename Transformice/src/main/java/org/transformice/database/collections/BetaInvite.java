@@ -5,11 +5,13 @@ import static org.transformice.utils.Utils.getUnixTime;
 import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.transformice.database.DBManager;
 
 @Entity(value = "betainvites", useDiscriminator = false)
 @Getter
+@NoArgsConstructor(force = true)
 public final class BetaInvite {
     @Id private ObjectId id; // default
     private final String beta_key;

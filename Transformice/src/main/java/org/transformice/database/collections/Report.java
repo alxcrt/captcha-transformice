@@ -7,6 +7,7 @@ import dev.morphia.annotations.Id;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.transformice.Client;
 import org.transformice.database.DBManager;
@@ -14,6 +15,7 @@ import org.transformice.database.embeds.ReportReporter;
 
 @Entity(value = "modopwet", useDiscriminator = false)
 @Getter
+@NoArgsConstructor(force = true)
 public final class Report {
     private final @Id long id;
     private final String playerName;

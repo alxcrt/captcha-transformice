@@ -6,11 +6,13 @@ import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
 import java.util.List;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.transformice.database.DBManager;
 
 @Entity(value = "stafflog", useDiscriminator = false)
 @Getter
+@NoArgsConstructor(force = true)
 public final class Stafflog {
     @Id private ObjectId id; // default
     private final String playerName;

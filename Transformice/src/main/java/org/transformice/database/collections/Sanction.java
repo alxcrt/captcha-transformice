@@ -5,11 +5,13 @@ import static org.transformice.utils.Utils.getUnixTime;
 import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.transformice.database.DBManager;
 
 @Entity(value = "casier", useDiscriminator = false)
 @Getter
+@NoArgsConstructor(force = true)
 public final class Sanction {
     private final @Id long id;
     private final String playerName;
