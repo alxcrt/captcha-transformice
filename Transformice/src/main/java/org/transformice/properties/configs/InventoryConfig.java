@@ -19,7 +19,7 @@ public final class InventoryConfig implements Property {
 
     @Override
     public void loadFile() {
-        Map<Integer, ConsumableInfo> tmp = JsonLoader.loadJson("server/inventory.json", new TypeToken<Int2ObjectMap<ConsumableInfo>>() {}.getType());
+        Map<Integer, ConsumableInfo> tmp = JsonLoader.loadJson("server/inventory.json", new TypeToken<Map<Integer, ConsumableInfo>>() {}.getType());
         if(tmp != null) {
             this.inventoryInstance.putAll(tmp);
         }
