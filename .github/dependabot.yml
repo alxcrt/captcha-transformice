@@ -60,8 +60,7 @@
         "timezone": "Europe/Bucharest"
       },
       "cooldown": {
-        "default-days": 3,
-        "semver-major-days": 7
+        "default-days": 3
       },
       "open-pull-requests-limit": 5,
       "groups": {
@@ -85,8 +84,7 @@
         "timezone": "Europe/Bucharest"
       },
       "cooldown": {
-        "default-days": 3,
-        "semver-major-days": 7
+        "default-days": 3
       },
       "open-pull-requests-limit": 5,
       "groups": {
@@ -110,8 +108,7 @@
         "timezone": "Europe/Bucharest"
       },
       "cooldown": {
-        "default-days": 3,
-        "semver-major-days": 7
+        "default-days": 3
       },
       "open-pull-requests-limit": 5,
       "groups": {
