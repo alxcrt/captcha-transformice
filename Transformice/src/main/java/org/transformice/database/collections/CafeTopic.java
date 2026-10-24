@@ -7,12 +7,14 @@ import dev.morphia.annotations.Id;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.transformice.database.DBManager;
 import org.transformice.database.embeds.CafePost;
 
 @Entity(value = "cafetopics", useDiscriminator = false)
 @Getter
+@NoArgsConstructor(force = true)
 public final class CafeTopic {
     @Id private final long id;
     private final String title;

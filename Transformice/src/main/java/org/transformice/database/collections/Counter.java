@@ -4,10 +4,12 @@ package org.transformice.database.collections;
 import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity(value = "counters", useDiscriminator = false)
 @Getter
+@NoArgsConstructor(force = true)
 public final class Counter {
     private final @Id String id;
     @Setter private Long value;

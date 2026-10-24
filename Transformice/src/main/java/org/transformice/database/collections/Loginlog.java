@@ -4,11 +4,13 @@ package org.transformice.database.collections;
 import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.transformice.database.DBManager;
 
 @Entity(value = "connexionlog", useDiscriminator = false)
 @Getter
+@NoArgsConstructor(force = true)
 public final class Loginlog {
     private @Id ObjectId id; // default
     private final String playerName;

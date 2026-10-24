@@ -12,7 +12,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Executors;
+
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -21,11 +21,17 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
-import org.jboss.netty.bootstrap.ServerBootstrap;
-import org.jboss.netty.channel.Channel;
-import org.jboss.netty.channel.ChannelPipeline;
-import org.jboss.netty.channel.Channels;
-import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelId;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.util.AttributeKey;
+import io.netty.channel.Channel;
+
+
 import org.transformice.command.CommandLoader;
 import org.transformice.connection.*;
 import org.transformice.database.DBUtils;
@@ -52,8 +58,11 @@ public final class Server {
     public int lastMonsterId = -1;
     public int leftistPlayers = 0;
     public int rightistPlayers = 0;
+    public static final AttributeKey<Client> CLIENT_SESSION = AttributeKey.valueOf("transformice.client");
     private final List<Channel> channels = new ArrayList<>();
-    private final Map<Integer, Client> clientSessions = new HashMap<>();
+    private NioEventLoopGroup acceptors;
+    private NioEventLoopGroup workers;
+    private final Map<ChannelId, Client> clientSessions = new HashMap<>();
     private boolean isClosed;
     @Getter public int lastClientSessionId;
     @Getter private Map<String, List<String>> sonarPlayerMovement;
@@ -445,11 +454,18 @@ public final class Server {
         }
 
         if (!Application.getSwfInfo().ports.isEmpty()) {
-            ServerBootstrap bootstrap = new ServerBootstrap(new NioServerSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool()));
-            bootstrap.setPipelineFactory(() -> createClientPipeline(this));
+            this.acceptors = new NioEventLoopGroup(1);
+            this.workers = new NioEventLoopGroup(2);
+            ServerBootstrap bootstrap = new ServerBootstrap().group(this.acceptors, this.workers)
+                .channel(NioServerSocketChannel.class)
+                .childHandler(new ChannelInitializer<SocketChannel>() {
+                    @Override protected void initChannel(SocketChannel channel) {
+                        channel.pipeline().addLast(createClientHandlers(Server.this));
+                    }
+                });
 
             for (Integer port : Application.getSwfInfo().ports) {
-                this.channels.add(bootstrap.bind(new InetSocketAddress(port)));
+                this.channels.add(bootstrap.bind(new InetSocketAddress(port)).syncUninterruptibly().channel());
             }
             Application.getLogger().info(Application.getTranslationManager().get("startdone", System.currentTimeMillis() - time));
         } else {
@@ -457,12 +473,8 @@ public final class Server {
         }
     }
 
-    static ChannelPipeline createClientPipeline(Server server) {
-        ChannelPipeline pipeline = Channels.pipeline();
-        pipeline.addLast("encoder", new Encoder());
-        pipeline.addLast("decoder", new Decoder());
-        pipeline.addLast("handler", new ClientHandler(server));
-        return pipeline;
+    static ChannelHandler[] createClientHandlers(Server server) {
+        return new ChannelHandler[] {new Encoder(), new Decoder(), new ClientHandler(server)};
     }
 
     /**
@@ -510,9 +522,11 @@ public final class Server {
         }
 
         for (Channel channel : this.channels) {
-            channel.unbind();
+            channel.close();
         }
 
+        if (this.acceptors != null) this.acceptors.shutdownGracefully();
+        if (this.workers != null) this.workers.shutdownGracefully();
         this.isClosed = true;
         System.exit(0);
     }
@@ -741,8 +755,8 @@ public final class Server {
      */
     public void addClientSession(final Channel channel) {
         Client client = new Client(this, channel);
-        this.clientSessions.put(channel.getId(), client);
-        channel.setAttachment(client);
+        this.clientSessions.put(channel.id(), client);
+        channel.attr(CLIENT_SESSION).set(client);
     }
 
     /**
@@ -750,6 +764,6 @@ public final class Server {
      * @param channel The network channel associated with the client.
      */
     public void removeClientSession(final Channel channel) {
-        this.clientSessions.remove(channel.getId());
+        this.clientSessions.remove(channel.id());
     }
 }

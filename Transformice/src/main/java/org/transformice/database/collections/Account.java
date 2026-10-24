@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.transformice.Application;
 import org.transformice.database.DBManager;
@@ -19,6 +20,7 @@ import org.transformice.libraries.Pair;
 
 @Entity(value = "accounts", useDiscriminator = false)
 @Getter
+@NoArgsConstructor(force = true)
 public final class Account {
     private final @Id long id;
     private final String playerName;

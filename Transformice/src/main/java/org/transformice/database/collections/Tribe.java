@@ -7,6 +7,7 @@ import dev.morphia.annotations.Id;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.transformice.database.DBManager;
 import org.transformice.database.embeds.TribeHistoricEntry;
@@ -14,6 +15,7 @@ import org.transformice.database.embeds.TribeRank;
 
 @Entity(value = "tribes", useDiscriminator = false)
 @Getter
+@NoArgsConstructor(force = true)
 public final class Tribe {
     private final @Id long id;
     private final String tribeLeader;

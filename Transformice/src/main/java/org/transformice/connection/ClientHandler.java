@@ -2,19 +2,17 @@ package org.transformice.connection;
 
 // Imports
 import java.net.InetSocketAddress;
-import org.jboss.netty.channel.ChannelHandlerContext;
-import org.jboss.netty.channel.ChannelStateEvent;
-import org.jboss.netty.channel.ExceptionEvent;
-import org.jboss.netty.channel.MessageEvent;
-import org.jboss.netty.channel.SimpleChannelHandler;
-import org.jboss.netty.handler.codec.frame.CorruptedFrameException;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.handler.codec.CorruptedFrameException;
+import io.netty.util.ReferenceCountUtil;
 import org.bytearray.ByteArray;
 import org.transformice.Application;
 import org.transformice.Client;
 import org.transformice.Server;
 import org.transformice.packets.PacketStruct;
 
-public final class ClientHandler extends SimpleChannelHandler {
+public final class ClientHandler extends ChannelInboundHandlerAdapter {
     private final Server server;
 
     public ClientHandler(Server server) {
@@ -22,31 +20,32 @@ public final class ClientHandler extends SimpleChannelHandler {
     }
 
     @Override
-    public void channelClosed(ChannelHandlerContext context, ChannelStateEvent e) {
-        Client client = (Client) context.getChannel().getAttachment();
+    public void channelInactive(ChannelHandlerContext context) {
+        Client client = context.channel().attr(Server.CLIENT_SESSION).get();
         if (client != null) {
             client.closeConnection();
         }
 
-        this.server.removeClientSession(context.getChannel());
+        this.server.removeClientSession(context.channel());
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) {
-        Application.getLogger().error(Application.getTranslationManager().get("packeterror"), e.getCause());
-        if (e.getCause() instanceof CorruptedFrameException) {
-            ctx.getChannel().close();
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+        Application.getLogger().error(Application.getTranslationManager().get("packeterror"), cause);
+        if (cause instanceof CorruptedFrameException) {
+            ctx.channel().close();
         }
     }
 
     @Override
-    public void messageReceived(ChannelHandlerContext context, MessageEvent e) {
-        if (!(e.getMessage() instanceof ByteArray packet)) {
+    public void channelRead(ChannelHandlerContext context, Object message) {
+        if (!(message instanceof ByteArray packet)) {
+            ReferenceCountUtil.release(message);
             return;
         }
 
-        if(this.server.getTempBlackList().contains(((InetSocketAddress)context.getChannel().getRemoteAddress()).getAddress().getHostAddress())) {
-            context.getChannel().close();
+        if(this.server.getTempBlackList().contains(((InetSocketAddress)context.channel().remoteAddress()).getAddress().getHostAddress())) {
+            context.channel().close();
             return;
         }
 
@@ -54,10 +53,10 @@ public final class ClientHandler extends SimpleChannelHandler {
             return;
         }
 
-        Client client = (Client) context.getChannel().getAttachment();
+        Client client = context.channel().attr(Server.CLIENT_SESSION).get();
         if (client == null) {
-            this.server.addClientSession(context.getChannel());
-            client = (Client) context.getChannel().getAttachment();
+            this.server.addClientSession(context.channel());
+            client = context.channel().attr(Server.CLIENT_SESSION).get();
         }
 
         int fingerPrint = packet.readUnsignedByte();

@@ -1,20 +1,23 @@
 services:
   mongodb:
-    image: mongo:7
+    image: mongo:8.0
     restart: unless-stopped
     environment:
-      MONGO_INITDB_ROOT_USERNAME: tfmadmin
-      MONGO_INITDB_ROOT_PASSWORD: tfmpassword123
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
     volumes:
       - mongo-data:/data/db
+      - mongo-config:/data/configdb
     ports:
-      - "27017:27017"
+      - "127.0.0.1:27017:27017"
 
   java-server:
     build:
       context: ./Transformice
       dockerfile: Dockerfile
     restart: unless-stopped
+    environment:
+      MONGODB_URI: mongodb://${MONGO_APP_USER}:${MONGO_APP_PASSWORD}@mongodb:27017/transformice3?authSource=transformice3
     depends_on:
       - mongodb
     ports:
@@ -50,3 +53,6 @@ services:
 
 volumes:
   mongo-data:
+  mongo-config:
+    external: true
+    name: ${MONGO_CONFIG_VOLUME}

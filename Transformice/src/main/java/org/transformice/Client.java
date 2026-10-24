@@ -13,8 +13,8 @@ import java.util.concurrent.TimeUnit;
 import lombok.Getter;
 import lombok.Setter;
 import org.bytearray.ByteArray;
-import org.jboss.netty.buffer.ChannelBuffers;
-import org.jboss.netty.channel.Channel;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaError;
 import org.luaj.vm2.lib.DebugLib;
@@ -197,11 +197,11 @@ public final class Client {
      * @param channel The channel where player is connected.
      */
     public Client(Server server, Channel channel) {
-        Country country = GeoIP.getCountry(((InetSocketAddress) channel.getRemoteAddress()).getAddress().getHostAddress());
+        Country country = GeoIP.getCountry(((InetSocketAddress) channel.remoteAddress()).getAddress().getHostAddress());
 
         this.server = server;
         this.channel = channel;
-        this.ipAddress = ((InetSocketAddress) channel.getRemoteAddress()).getAddress().getHostAddress();
+        this.ipAddress = ((InetSocketAddress) channel.remoteAddress()).getAddress().getHostAddress();
         this.isClosed = false;
         this.countryLangue = (country != null) ? country.getIsoCode() : "en";
         this.countryName = (country != null) ? country.getName() : "null (proxy)";
@@ -1196,7 +1196,7 @@ public final class Client {
         _packet.writeBytes(data);
 
         Application.getLogger().debug(Application.getTranslationManager().get("sendpacket", this.ipAddress, packet.getC(), packet.getCC()));
-        this.channel.write(ChannelBuffers.wrappedBuffer(_packet.toByteArray()));
+        this.channel.writeAndFlush(Unpooled.wrappedBuffer(_packet.toByteArray()));
     }
 
     /**
@@ -1226,7 +1226,7 @@ public final class Client {
         _packet.writeBytes(data.toByteArray());
 
         Application.getLogger().debug(Application.getTranslationManager().get("sendlegacypacket", this.ipAddress, packet.getC(), packet.getCC(), _packet));
-        this.channel.write(ChannelBuffers.wrappedBuffer(_packet.toByteArray()));
+        this.channel.writeAndFlush(Unpooled.wrappedBuffer(_packet.toByteArray()));
     }
 
     /**
@@ -1253,7 +1253,7 @@ public final class Client {
         _packet.writeBytes(data);
 
         Application.getLogger().debug(Application.getTranslationManager().get("sendtribullepacket", this.ipAddress, packet.getTribulleCode()));
-        this.channel.write(ChannelBuffers.wrappedBuffer(_packet.toByteArray()));
+        this.channel.writeAndFlush(Unpooled.wrappedBuffer(_packet.toByteArray()));
     }
 
     /**

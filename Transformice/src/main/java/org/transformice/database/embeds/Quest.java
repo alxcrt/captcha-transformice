@@ -4,10 +4,12 @@ package org.transformice.database.embeds;
 import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Id;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Embedded
+@NoArgsConstructor(force = true)
 public class Quest {
     @Id private final long id;
     private final int missionType;

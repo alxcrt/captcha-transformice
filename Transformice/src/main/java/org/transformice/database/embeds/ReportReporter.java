@@ -4,9 +4,11 @@ package org.transformice.database.embeds;
 import static org.transformice.utils.Utils.getUnixTime;
 import dev.morphia.annotations.Embedded;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Embedded
+@NoArgsConstructor(force = true)
 public class ReportReporter {
     private final String playerName;
     private final String reportComment;

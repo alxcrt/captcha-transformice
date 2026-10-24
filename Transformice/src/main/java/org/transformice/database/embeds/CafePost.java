@@ -7,11 +7,13 @@ import dev.morphia.annotations.Id;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.transformice.database.DBManager;
 
 @Getter
 @Embedded
+@NoArgsConstructor(force = true)
 public class CafePost {
     @Setter @Id private long id;
     final private String message;

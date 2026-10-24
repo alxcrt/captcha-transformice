@@ -5,7 +5,7 @@ import com.mongodb.client.MongoClients;
 import dev.morphia.Datastore;
 import dev.morphia.Morphia;
 import dev.morphia.mapping.MapperOptions;
-import dev.morphia.query.experimental.filters.Filters;
+import dev.morphia.query.filters.Filters;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -23,7 +23,7 @@ public final class DBManager {
      * Starts the mongodb database.
      */
     public static void initializeDatabase() {
-        String dbUrl = Application.getPropertiesInfo().database_url;
+        String dbUrl = System.getenv().getOrDefault("MONGODB_URI", Application.getPropertiesInfo().database_url);
         String dbName = Application.getPropertiesInfo().collection_name;
 
         MapperOptions mapperOptions = MapperOptions.builder().storeEmpties(true).storeNulls(false).build();

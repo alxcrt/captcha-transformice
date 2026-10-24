@@ -4,11 +4,13 @@ package org.transformice.database.collections;
 import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.transformice.database.DBManager;
 
 @Entity(value = "mapeditor", useDiscriminator = false)
 @Getter
+@NoArgsConstructor(force = true)
 public final class MapEditor {
     @Id private final int id; // default
     private final int mapCode;
