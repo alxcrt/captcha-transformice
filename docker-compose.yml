@@ -7,6 +7,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
     volumes:
       - mongo-data:/data/db
+      - mongo-config:/data/configdb
     ports:
       - "127.0.0.1:27017:27017"
 
@@ -52,3 +53,6 @@ services:
 
 volumes:
   mongo-data:
+  mongo-config:
+    external: true
+    name: ${MONGO_CONFIG_VOLUME}
