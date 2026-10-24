@@ -8,7 +8,7 @@ services:
     volumes:
       - mongo-data:/data/db
     ports:
-      - "27017:27017"
+      - "127.0.0.1:27017:27017"
 
   java-server:
     build:
@@ -16,7 +16,7 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     environment:
-      MONGODB_URI: mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongodb:27017/transformice3?authSource=admin
+      MONGODB_URI: mongodb://${MONGO_APP_USER}:${MONGO_APP_PASSWORD}@mongodb:27017/transformice3?authSource=transformice3
     depends_on:
       - mongodb
     ports:
